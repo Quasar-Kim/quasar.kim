@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/classless.css">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <title>Quasar.Kim</title>
+    <style>
+        .post-card {
+            display: block;
+            padding: 1rem;
+            margin: 1rem;
+        }
+
+        .post-card h4 {
+            margin-top: 0.6rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="/blog">Quasar.Kim</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+            {% for post in collections.blog %}
+                <div class="bg-light post-card">
+                    <a href="{{ post.url }}"><h4>{{ post.data.title }}</h4></a>
+                    <p>{{ post.data.summary }}</p>
+                    <time>{{ page.date.toLocaleDateString('ko-KR') }}</time>
+                </div>
+            {% endfor %}
+        </div>
+    </main>
+    
+</body>
+</html>

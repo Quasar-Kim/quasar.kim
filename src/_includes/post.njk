@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/classless.css">
+    <link rel="stylesheet" href="/codeTheme.css">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <title>{{ title }}</title>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="/blog">Quasar.Kim</a></li>
+            </ul>
+        </nav>
+        <section>
+            <h1>{{ title }}</h1>
+            <p>{{ summary }}</p>
+            <time>{{ page.date.toLocaleDateString('ko-KR') }}</time>
+        </section>
+    </header>
+    <main>
+        <article>
+            {{ content | safe }}
+        </article>
+        {# utterances comments #}
+        <script src="https://utteranc.es/client.js"
+        repo="quasar-kim/quasar.kim"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+        </script>
+    </main>
+</body>
+</html>
