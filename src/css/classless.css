@@ -137,7 +137,7 @@ article { counter-reset: h2 0 h3 0 tab 0 fig 0 lst 0 ref 0 eq 0; }
 article figure figcaption:before {
 	color: var(--cemph);
 	counter-increment: fig;
-	content: "Figure " counter(fig) ": ";
+	content: "그림 " counter(fig) ": ";
 }
 
 /* subfigures */
