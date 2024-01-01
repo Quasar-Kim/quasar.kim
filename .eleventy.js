@@ -5,6 +5,7 @@ module.exports = eleventyConfig => {
     eleventyConfig.addPassthroughCopy('src/font/*')
     eleventyConfig.addPassthroughCopy('src/static')
     eleventyConfig.addPassthroughCopy('src/robots.txt')
+    eleventyConfig.addPassthroughCopy('src/favicon.ico')
 
     return {
         passthroughFileCopy: true,
