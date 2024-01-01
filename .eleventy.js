@@ -1,5 +1,6 @@
 module.exports = eleventyConfig => {
     eleventyConfig.addPlugin(require('@11ty/eleventy-plugin-syntaxhighlight'))
+    eleventyConfig.addPlugin(require('@11ty/eleventy-plugin-rss'))
 
     eleventyConfig.addPassthroughCopy('src/css/*')
     eleventyConfig.addPassthroughCopy('src/font/*')

@@ -1,5 +1,8 @@
 {
     "name": "Quasar.Kim",
+    "description": "프로그래밍과 머신 러닝에 대해 배운 것을 나누는 블로그입니다.",
     "url": "https://quasar.kim",
-    "favicon": "https://quasar.kim/static/favicon.ico"
+    "favicon": "https://quasar.kim/static/favicon.ico",
+    "author": "김준성",
+    "lang": "ko"
 }

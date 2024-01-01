@@ -46,3 +46,21 @@ small {
 h2 {
      font-variant: initial;
 }
+
+.icon {
+     width: 24px;
+     height: 24px;
+}
+
+.icon.dim {
+     filter: opacity(0.3);
+     transition: filter 0.1s ease-out;
+}
+
+.icon.dim:hover {
+     filter: opacity(1);
+}
+
+.float-right {
+     float: right;
+}
