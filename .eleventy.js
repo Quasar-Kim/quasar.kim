@@ -4,6 +4,7 @@ module.exports = eleventyConfig => {
     eleventyConfig.addPassthroughCopy('src/css/*')
     eleventyConfig.addPassthroughCopy('src/font/*')
     eleventyConfig.addPassthroughCopy('src/static')
+    eleventyConfig.addPassthroughCopy('src/robots.txt')
 
     return {
         passthroughFileCopy: true,
