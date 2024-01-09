@@ -10,8 +10,10 @@
     <meta property="og:description" content="{{ description or renderData.description }}">
     <meta property="og:image" content="https://quasar.kim/static/og_meta_front.png">
     <meta property="og:type" content="article">
-    <link rel="preload" href="/css/codeTheme.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="/css/codeTheme.css"></noscript>
+    {# <link rel="preload" href="/css/codeTheme.css" as="style" onload="this.onload=null;this.rel='stylesheet'"> #}
+    {# <noscript><link rel="stylesheet" href="/css/codeTheme.css"></noscript> #}
+    <link rel="preload" href="/css/prism-theme.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="/css/prism-theme.css"></noscript>
 
     {% set css %}
         {% include "style.css" %}

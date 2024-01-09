@@ -71,7 +71,7 @@ mesh = Mesh(devices, ("x", "y"))
     <p>
         가장 먼저 디바이스 객체들로 이루어진 2x4 크기의 배열을 생성합니다. 그리고 이 배열을 이용해 <code>Mesh</code> 객체를 만듭니다. <code>Mesh</code> 객체는 디바이스들의 배열과 배열의 각 차원의 이름을 저장하는 단순한 객체로, 생성 시 두번째 인자로 각 차원에 이름을 붙여줄 수 있습니다. 여기서는 첫번째 차원에 "x", 두번째 차원에 "y"라는 이름을 붙여주었습니다.
     </p>
-    <div class="card hint">
+    <div class="card">
         <p>NOTE</p>
         <p>
             JAX에서는 디바이스 객체들로 이루어진 배열을 <b>디바이스 메쉬</b><small>device mesh</small>, <code>Mesh</code> 객체를 <b>논리 메쉬</b><small>logical mesh</small>라 부릅니다. 따라서 해당 시리즈에서도 이제부터 이 둘을 이와 같이 구분하려 합니다. 또한, 그냥 <b>메쉬</b>라고 할 경우에는 논리 메쉬를 뜻하는 것입니다.

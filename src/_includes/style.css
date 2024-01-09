@@ -17,7 +17,7 @@ Table of Contents:
 	--navpos: absolute;  /* fixed | absolute */
 	--font-p: 1em/1.7  'Noto Sans KR', sans-serif;
 	--font-h: .9em/1.5 'Noto Sans KR', sans-serif;
-	--font-c: .9em/1.4 'Noto Sans Mono', monospace;
+	--font-c: 1em/1.7 'Inconsolata', 'D2Coding', 'D2Coding ligature', monospace;
 	--border: 1px solid var(--cmed);
 	--ornament: "‹‹‹ ›››";
 	/* foreground   | background color */
@@ -105,7 +105,7 @@ p>img:not(:only-child) { float: right; margin: 0 0 .5em .5em; }
 figure > img, figure > picture { display: inline-block; width: auto; }
 figure > img:only-of-type, figure > svg:only-of-type, figure > picture:only-of-type { max-width: 100%; display: block; margin: 0 auto 0.4em; }
 figure > picture > img { height: auto; }
-figcaption, caption { font: var(--font-h); color: var(--cdark); width: 100%; }
+figcaption, caption { font: var(--font-h); width: 100%; }
 figcaption > *:first-child, caption > *:first-child { display: inline-block; margin: 0; }
 figure > *:not(:last-child) { margin-bottom: 0.4rem; }
 
@@ -125,7 +125,7 @@ kbd { border: 1px solid var(--cmed); }
 
 /* misc */
 blockquote { border-left: 0.4rem solid var(--cmed); padding: 0 0 0 1rem;  }
-time{ color: var(--cdark); }
+/* time{ color: var(--cdark); } */
 hr { border: 0; border-top: 0.1rem solid var(--cmed); }
 nav { width: 100%; /* background-color: var(--clight); */}
 ::selection, mark { background: var(--clink); color: var(--cbg); }
@@ -425,42 +425,45 @@ p>select { padding: 0;      margin: 0 .5em; }
 }
 
 small {
-     font-size: 0.7em;
-     color: gray;
+	font-size: 0.7em;
 }
 
 h2 {
-     font-variant: initial;
+	font-variant: initial;
 }
 
 .icon {
-     width: 24px;
-     height: 24px;
+	width: 24px;
+	height: 24px;
 }
 
 .icon.dim {
-     filter: opacity(0.3);
-     transition: filter 0.1s ease-out;
+	filter: opacity(0.3);
+	transition: filter 0.1s ease-out;
 }
 
 .icon.dim:hover {
-     filter: opacity(1);
+	filter: opacity(1);
 }
 
 .float-right {
-     float: right;
+	float: right;
 }
 
 header a.series-anchor {
-     text-decoration: none;
+	text-decoration: none;
 }
 
 .post-card {
-     display: block;
-     padding: 1rem;
-     margin: 1rem 0;
+	display: block;
+	padding: 1rem;
+	margin: 1rem 0;
 }
 
 .post-card h4 {
-     margin-top: 0.6rem;
+	margin-top: 0.6rem;
+}
+
+footer .footer-title {
+	font-size: 1.2em;
 }
