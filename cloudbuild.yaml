@@ -1,0 +1,9 @@
+steps:
+- name: 'node'
+  entrypoint: 'npm'
+  args: ['ci']
+- name: 'node'
+  entrypoint: 'npm'
+  args: ['run', 'build']
+options:
+  defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET
