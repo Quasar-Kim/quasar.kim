@@ -18,24 +18,17 @@
 </head>
 <body>
     <header>
-        <nav>
-            <ul>
-                <li><a href="/">Quasar.Kim</a></li>
-                <li class="float-right sticky">
-                    <a href="https://github.com/Quasar-Kim" target="_blank">
-                        <img src="/static/icon/mark-github.svg" alt="github icon" class="icon dim">
-                    </a>
-                </li>
-                <li class="float-right sticky">
-                    <a href="/feed.xml" target="_blank">
-                        <img src="/static/icon/rss.svg" alt="rss icon" class="icon dim">
-                    </a>
-                </li>
-            </ul>
-        </nav>
+        {% include "nav.njk" %}
         <section>
             <h1>{{ title }}</h1>
             <p>{{ summary }}</p>
+            {% if tags | hasSeriesTag %}
+            {% set seriesTag = getSeriesTag(tags) %}
+            {% set seriesInfo = getSeriesInfo(seriesTag) %}
+            <p>
+                <a href="/series/{{ seriesInfo.id }}/" class="series-anchor">시리즈: {{ seriesInfo.name }}</a>
+            </p>
+            {% endif %}
             <time>{{ page.date.toLocaleDateString('ko-KR') }}</time>
         </section>
     </header>
@@ -43,6 +36,20 @@
         <article>
             {{ content | safe }}
         </article>
+        {% if tags | hasSeriesTag %}
+        {% set seriesTag = getSeriesTag(tags) %}
+        {% set seriesInfo = getSeriesInfo(seriesTag) %}
+        <div class="card info">
+            <p>
+                <a href="/series/{{ seriesInfo.id }}/">시리즈: {{ seriesInfo.name }}</a>
+            </p>
+            <ol>
+            {% for post in collections[seriesTag] %}
+                <li><a href="{{ post.url }}">{{ post.data.title }}</a></li>
+            {% endfor %}
+            </ol>
+        </div>
+        {% endif %}
         {# utterances comments #}
         <script src="https://utteranc.es/client.js"
         repo="quasar-kim/quasar.kim"
@@ -52,5 +59,6 @@
         async>
         </script>
     </main>
+    {% include "footer.njk" %}
 </body>
 </html>

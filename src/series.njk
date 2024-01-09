@@ -1,3 +1,10 @@
+---
+pagination:
+    data: series
+    size: 1
+    alias: seriesInfo
+permalink: /series/{{ seriesInfo.id }}/
+---
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,7 +14,7 @@
     <link rel="stylesheet" href="/css/classless.css">
     <link rel="stylesheet" href="/css/style.css">
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-    <title>Quasar.Kim</title>
+    <title>{{ seriesInfo.name }}</title>
     <style>
         .post-card {
             display: block;
@@ -18,20 +25,22 @@
         .post-card h4 {
             margin-top: 0.6rem;
         }
-
-
     </style>
 </head>
 <body>
     {% include "nav.njk" %}
     <main>
-            {% for post in collections.blog | reverse %}
-                <div class="bg-light post-card">
-                    <a href="{{ post.url }}"><h4>{{ post.data.title }}</h4></a>
-                    <p>{{ post.data.summary }}</p>
-                    <time>{{ post.date.toLocaleDateString('ko-KR') }}</time>
-                </div>
-            {% endfor %}
+        <section>
+            <h1>시리즈: {{ seriesInfo.name }}</h1>
+            <p>{{ seriesInfo.description }}</p>
+        </section>
+        {% for post in collections[seriesInfo.tag] %}
+            <div class="bg-light post-card">
+                <a href="{{ post.url }}"><h4>{{ post.data.title }}</h4></a>
+                <p>{{ post.data.summary }}</p>
+                <time>{{ post.date.toLocaleDateString('ko-KR') }}</time>
+            </div>
+        {% endfor %}
         </div>
     </main>
 </body>

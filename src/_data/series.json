@@ -1,0 +1,8 @@
+[
+    {
+        "name": "JAX와 함께하는 LLM 구축",
+        "description": "JAX 라이브러리를 이용해 LLM을 밑바닥부터 구축해봅시다.",
+        "tag": "series-jax-llm",
+        "id": "jax-llm"
+    }
+]

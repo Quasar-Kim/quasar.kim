@@ -1,3 +1,7 @@
+const fs = require("fs")
+
+const seriesInfo = JSON.parse(fs.readFileSync("src/_data/series.json"))
+
 module.exports = eleventyConfig => {
     eleventyConfig.addPlugin(require('@11ty/eleventy-plugin-syntaxhighlight'))
     eleventyConfig.addPlugin(require('@11ty/eleventy-plugin-rss'))
@@ -9,6 +13,21 @@ module.exports = eleventyConfig => {
     eleventyConfig.addPassthroughCopy('src/favicon.ico')
 
     eleventyConfig.addFilter("yyyymmdd", date => date.toISOString().split('T')[0])
+    eleventyConfig.addFilter("hasSeriesTag", tags => tags.map(t => t.startsWith("series-")).reduce((acc, x) => acc + x, 0) === 1)
+    eleventyConfig.addNunjucksGlobal("getSeriesTag", tags => {
+        for (t of tags) {
+            if (t.startsWith("series-")) return t
+        }
+        return null
+    })
+    eleventyConfig.addNunjucksGlobal("getSeriesInfo", seriesTag => {
+        const seriesName = seriesTag.substring("series-".length)
+        for (s of seriesInfo) {
+            if (s.tag === seriesTag) return s
+        }
+
+        return null
+    })
 
     return {
         passthroughFileCopy: true,

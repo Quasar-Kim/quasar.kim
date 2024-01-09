@@ -4,7 +4,9 @@ title: JAX와 함께하는 LLM 구축 - 3. GSPMD 파트 I
 summary: GSPMD의 정의와 샤딩 완성
 description: JAX에서 샤딩을 이용한 병렬화를 담당하는 시스템인 GSPMD에 대해서 알아봅시다.
 date: 2024-01-09
-tags: blog
+tags:
+    - blog
+    - series-jax-llm
 ---
 
 <section>
@@ -345,8 +347,6 @@ output sharding: GSPMDSharding({replicated}, memory_kind=tpu_hbm)
     <p>
         읽어주셔서 감사합니다.
     </p>
-</section>
-<section>
     <h2>참고문헌</h2>
     <ul>
         <li><a href="https://arxiv.org/abs/2105.04663">GSPMD 논문 - GSPMD: General and Scalable Parallelization for ML Computation Graphs</a></li>
@@ -356,4 +356,3 @@ output sharding: GSPMDSharding({replicated}, memory_kind=tpu_hbm)
         <li><a href="https://github.com/openxla/stablehlo/blob/main/docs/spec.md">StableHLO 스펙</a></li>
     </ul>
 </section>
-
