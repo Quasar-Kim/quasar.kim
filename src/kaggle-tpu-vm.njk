@@ -32,7 +32,9 @@ os.environ.pop('PJRT_DEVICE', None)
     그래서 이 환경 변수를 지워버리면 훈련이 정상적으로 돌아갑니다.
 </p>
 <P>
-    <img src="/static/kaggle-tpu-vm/wandb-graph.png">
+    <figure>
+        {% image "src/static/kaggle-tpu-vm/wandb-graph.png", "" %}
+    </figure>
     이렇게 하자 훈련이 잘 돌아갑니다. 위 사진은 Weight & Bias 서비스를 이용해 기록한 그래프인데, 여기서 <code>tpu</code>의 그래프를 보면 정상적으로 훈련이 되고 있는 걸 볼 수 있습니다.
     실제로 훈련에 사용한 노트북은 <a href="https://www.kaggle.com/code/quasarkim/transformer-from-scratch-tpu/notebook">여기</a>서,
     사용한 코드는 <a href="https://github.com/quasar-kim/transformer-from-scratch">여기</a>서 볼 수 있습니다.

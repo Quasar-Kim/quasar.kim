@@ -15,7 +15,7 @@ tags:
     </p>
     <br>
     <figure>
-        <img src="/static/jax-llm-2/fig1.png">
+        {% image "src/static/jax-llm-2/fig1.png", "jax.sharding API를 시각화한 그림" %}
         <figcaption>jax.sharding API</figcaption>
     </figure>
 
@@ -114,14 +114,14 @@ y.devices()
 그리고 논리 메쉬에 대해 배열을 어떻게 나눌 것인지를 결정하는 것이 <code>PartitionSpec</code> 객체입니다. <code>PartitionSpec</code>은 배열의 각 차원이 메쉬의 어떤 차원에 대해 나뉘어지는지를 정의하는 튜플입니다. 앞서 보았던 <code>PartitionSpec("x", "y")</code>는 배열의 0번째 차원을 메쉬의 차원 "x"에 대해서, 배열의 1번째 차원을 메쉬의 차원 "y"에 대해서 나눈다는 의미입니다.
     </p>
     <figure>
-        <img src="/static/jax-llm-2/fig2.png">
+        {% image "src/static/jax-llm-2/fig2.png", "PartitionSpec(\"x\", \"y\")의 시각화" %}
         <figcaption>PartitionSpec("x", "y")</figcaption>
     </figure>
     <p>
         배열의 0번째 차원을 메쉬의 차원 "x"에 대해 나눈다는 것은 <b>0번째 차원을 나타내는 모든 1차원 배열들을 메쉬의 "x" 차원의 크기만큼의 조각으로 나눈다</b>는 의미입니다. 앞서 보았던 4x4 배열을 2x4 메쉬에 대해 <code>PartitionSpec("x", "y")</code>으로 샤딩하는 상황을 생각해봅시다. 먼저 0번째 차원을 나타내는 1차원 배열을 메쉬의 "x" 차원의 크기인 2개의 조각으로 나눕니다. (그림 2 왼쪽), 그 다음으론 1번째 차원을 나타내는 1차원 배열들 4개를 모두 메쉬의 "y" 차원의 크기인 4개의 조각으로 나누어 줍니다. (그림 2 오른쪽)
     </p>
     <figure>
-        <img src="/static/jax-llm-2/fig3.png">
+        {% image "src/static/jax-llm-2/fig3.png", "메쉬와 동일한 모양을 가지는 샤드들을 나타낸 그림" %}
         <figcaption>샤드들은 메쉬와 동일한 모양을 가진다</figcaption>
     </figure>
     <p>
@@ -133,7 +133,7 @@ y.devices()
     </p>
     <h4>PartitionSpec("x", None)</h4>
     <figure>
-        <img src="/static/jax-llm-2/fig4.png">
+        {% image "src/static/jax-llm-2/fig4.png", "PartitionSpec(\"x\", None)의 시각화" %}
         <figcaption>PartitionSpec("x", None)</figcaption>
     </figure>
     <p>
@@ -145,7 +145,7 @@ y.devices()
     </p>
     <h4>PartitionSpec("y", "x")</h4>
     <figure>
-        <img src="/static/jax-llm-2/fig5.png">
+        {% image "src/static/jax-llm-2/fig5.png", "PartitionSpec(\"y\", \"x\")의 시각화" %}
         <figcaption>PartitionSpec("y", "x")</figcaption>
     </figure>
     <p>
