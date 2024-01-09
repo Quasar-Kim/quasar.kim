@@ -6,6 +6,6 @@ steps:
   entrypoint: 'npm'
   args: ['run', 'build']
 - name: gcr.io/quasar-kim-website/firebase
-  args: ['deploy', '--project=personal-website-aa692', '--only=hosting']
+  args: ['deploy', '--project=quasar-kim-website', '--only=hosting']
 options:
   defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET
