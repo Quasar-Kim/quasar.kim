@@ -1,4 +1,5 @@
 const fs = require("fs")
+const CleanCSS = require("clean-css")
 
 const seriesInfo = JSON.parse(fs.readFileSync("src/_data/series.json"))
 
@@ -14,6 +15,8 @@ module.exports = eleventyConfig => {
 
     eleventyConfig.addFilter("yyyymmdd", date => date.toISOString().split('T')[0])
     eleventyConfig.addFilter("hasSeriesTag", tags => tags.map(t => t.startsWith("series-")).reduce((acc, x) => acc + x, 0) === 1)
+    eleventyConfig.addFilter("cssmin", code => new CleanCSS({}).minify(code).styles)
+
     eleventyConfig.addNunjucksGlobal("getSeriesTag", tags => {
         for (t of tags) {
             if (t.startsWith("series-")) return t

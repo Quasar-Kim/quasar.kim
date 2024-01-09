@@ -378,3 +378,84 @@ p>select { padding: 0;      margin: 0 .5em; }
 	.noprint, body>nav, section:after { display: none; }
 	.row { flex-direction: row; }
 }
+
+/* noto-sans-kr-300 - latin_korean */
+@font-face {
+    font-family: 'Noto Sans KR';
+    font-style: normal;
+    font-weight: 300;
+    src: local('Noto Sans KR Light'),
+         url('../font/noto-sans-kr-v27-latin_korean-300.woff2') format('woff2'),
+         url('../font/noto-sans-kr-v27-latin_korean-300.woff') format('woff');
+}
+  
+/* noto-sans-kr-regular - latin_korean */
+@font-face {
+  font-family: 'Noto Sans KR';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Noto Sans KR Regular'),
+       url('../font/noto-sans-kr-v27-latin_korean-regular.woff2') format('woff2'),
+       url('../font/noto-sans-kr-v27-latin_korean-regular.woff') format('woff');
+}
+
+/* noto-sans-kr-500 - latin_korean */
+@font-face {
+  font-family: 'Noto Sans KR';
+  font-style: normal;
+  font-weight: 500;
+  src: local('Noto Sans KR Medium'),
+       url('../font/noto-sans-kr-v27-latin_korean-500.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+       url('../font/noto-sans-kr-v27-latin_korean-500.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+
+/* noto-sans-kr-700 - latin_korean */
+@font-face {
+  font-family: 'Noto Sans KR';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Noto Sans KR Bold'),
+       url('../font/noto-sans-kr-v27-latin_korean-700.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+       url('../font/noto-sans-kr-v27-latin_korean-700.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+
+small {
+     font-size: 0.7em;
+     color: gray;
+}
+
+h2 {
+     font-variant: initial;
+}
+
+.icon {
+     width: 24px;
+     height: 24px;
+}
+
+.icon.dim {
+     filter: opacity(0.3);
+     transition: filter 0.1s ease-out;
+}
+
+.icon.dim:hover {
+     filter: opacity(1);
+}
+
+.float-right {
+     float: right;
+}
+
+header a.series-anchor {
+     text-decoration: none;
+}
+
+.post-card {
+     display: block;
+     padding: 1rem;
+     margin: 1rem 0;
+}
+
+.post-card h4 {
+     margin-top: 0.6rem;
+}

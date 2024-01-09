@@ -4,23 +4,16 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/classless.css">
-    <link rel="stylesheet" href="/css/style.css">
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-    <title>Quasar.Kim</title>
+
+    {% set css %}
+        {% include "style.css" %}
+    {% endset %}
     <style>
-        .post-card {
-            display: block;
-            padding: 1rem;
-            margin: 1rem 0;
-        }
-
-        .post-card h4 {
-            margin-top: 0.6rem;
-        }
-
-
+        {{ css | cssmin | safe }}
     </style>
+
+    <title>Quasar.Kim</title>
 </head>
 <body>
     {% include "nav.njk" %}
