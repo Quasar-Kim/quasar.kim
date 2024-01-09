@@ -15,7 +15,7 @@ tags:
     </p>
     <br>
     <figure>
-        <img src="/static/jax-llm-3/gspmd.png">
+        {% image "src/static/jax-llm-3/gspmd.png", "GSPMD를 시각화한 그림" %}
         <figcaption>GSPMD에 대해서 알아봅시다.</figcaption>
     </figure>
     <br>
@@ -68,7 +68,7 @@ def perceptron(x, w, b):
     {% endhighlight %}
     </p>
     <figure>
-        <img src="/static/jax-llm-3/computation-graph-1.png">
+        {% image "src/static/jax-llm-3/computation-graph-1.png", "함수 perceptorn의 계산 그래프" %}
         <figcaption>함수 perceptron의 계산 그래프. 텐서는 푸른색 사각형으로, 연산은 붉은색 사각형으로 표시했습니다.</figcaption>
     </figure>
 
@@ -82,7 +82,7 @@ def perceptron(x, w, b):
         GSPMD의 이점은 병렬 코드를 직관적이고 효율적으로 작성할 수 있다는 것입니다. 복잡한 병렬화 과정을 컴파일러가 담당하기 때문에 사용자는 싱글 디바이스 프로그램을 작성하는 것처럼 멀티 디바이스 프로그램을 작성할 수 있습니다. 또한, 필요할 시 사용자는 텐서 어노테이션을 통해서 병렬화 과정에 개입할 수 있으며, 이를 통해 batch parallelism, pipeline parallelism 등 다양한 병렬화 패턴들을 손쉽게 표현할 수 있습니다. 효율성의 측면에서 살펴보자면, GSPMD를 트랜스포머 모델에 적용할 시 모델 크기 및 배치 크기에 따른 메모리 사용량이 선형적으로 증가합니다. (그림 3) 이러한 장점 덕분에, GSPMD를 활용하면 거대한 언어 모델을 직관적이고 효율적으로 훈련시키는 것이 가능합니다.
     </p>
     <figure>
-        <img src="/static/jax-llm-3/pytorch-xla-gspmd-scaling.svg">
+        <img src="/static/jax-llm-3/pytorch-xla-gspmd-scaling.svg" alt="PyTorch XLA의 모델 스케일링 실험 결과 그래프">
         <figcaption>JAX와 동일한 런타임을 사용하는 PyTorch XLA의 모델 스케일링 실험 결과 그래프. GSPMD를 사용 시 배치 크기가 증가함에 따라서 메모리 사용량이 선형적으로 증가합니다. 출처: <a href="https://pytorch.org/blog/pytorch-2.0-xla/">PyTorch Blog</a></figcaption>
     </figure>
     <h3>JAX와 GSPMD</h3>
@@ -170,8 +170,8 @@ module @jit_perceptron attributes {mhlo.num_partitions = 8 : i32, mhlo.num_repli
         앞서 말했듯이, 이 함수 표현은 계산 그래프라고도 볼 수도 있습니다. 위의 함수 표현을 바탕으로 계산 그래프를 그려보면 다음과 같습니다.
     </p>
     <figure>
-        <img src="/static/jax-llm-3/computation-graph-2.png">
-        <figcaption>lower된 함수로부터 그린 계산 그래프. 그림 2의 그래프와 연산 이름을 제외하고는 동일합니다.</figcaption>
+        {% image "src/static/jax-llm-3/computation-graph-2.png", "Lower된 함수로부터 그린 계산 그래프" %}
+        <figcaption>Lower된 함수로부터 그린 계산 그래프. 그림 2의 그래프와 연산 이름을 제외하고는 동일합니다.</figcaption>
     </figure>
     <p>
         이렇게 얻은 계산 그래프는 XLA 컴파일러에 의해 컴파일된 후 실행됩니다. <code>Lowered</code> 객체의 <code>compile()</code> 함수를 호출해 명시적으로 함수를 컴파일할 수 있습니다.
@@ -217,7 +217,7 @@ ENTRY %main.9_spmd (param: f32[24,24], param.1: f32[24,12], param.2: f32[48]) ->
         <li>파티셔닝</li>
     </ol>
     <figure>
-        <img src="/static/jax-llm-3/stages-of-gspmd.png">
+        {% image "src/static/jax-llm-3/stages-of-gspmd.png", "GSPMD 병렬화 수행의 과정을 나타내는 그림" %}
         <figcaption>GSPMD 병렬화 수행의 과정</figcaption>
     </figure>
     <p>
@@ -228,14 +228,14 @@ ENTRY %main.9_spmd (param: f32[24,24], param.1: f32[24,12], param.2: f32[48]) ->
         샤딩 완성<small>sharding completion</small> 과정에서는 <b>사용자가 명시한 텐서 어노테이션을 이용해 계산 그래프 상 모든 텐서의 샤딩을 결정</b>합니다.
     </p>
     <figure>
-        <img src="/static/jax-llm-3/tensor-annotations.png">
+        {% image "src/static/jax-llm-3/tensor-annotations.png", "두 텐서의 내적을 구하는 간단한 함수에서의 텐서 어노테이션을 나타내는 그림" %}
         <figcaption>두 텐서의 내적을 구하는 간단한 함수에서의 텐서 어노테이션. 두 입력값들의 샤딩이 어노테이션을 통해 명시되어 있습니다.</figcaption>
     </figure>
     <p>
         앞서 말했듯이, 텐서 어노테이션을 통해 사용자는 계산 그래프 상 특정 텐서들의 샤딩을 정할 수 있습니다. GSPMD 시스템은 텐서 어노테이션으로 명시된 샤딩을 순전파<small>forward propagation</small> 및 역전파<small>backward propagation</small> 시키길 반복하며 그래프 위의 모든 텐서들의 샤딩을 결정합니다. 이때 연산의 입력 텐서가 서로 다른 샤딩을 가질 때에는 (가능한 경우) 이들을 병합하고, 이를 출력 텐서의 샤딩으로 삼습니다.
     </p>
     <figure>
-        <img src="/static/jax-llm-3/sharding-propagation.png">
+        {% image "src/static/jax-llm-3/sharding-propagation.png", "간단한 내적 프로그램에서 샤딩 완성이 수행되는 과정을 나타내는 그림" %}
         <figcaption>간단한 내적 프로그램에서 샤딩 완성이 수행되는 과정.</figcaption>
     </figure>
     <p>
@@ -293,7 +293,7 @@ output sharding: GSPMDSharding({replicated}, memory_kind=tpu_hbm)
         주목해야 할 부분은 내적의 결과와 브로드캐스된 편향의 샤딩입니다. 내적의 결과의 샤딩의 <code>devices</code> 필드 <code>[2, 4]0,1,2,3,4,5,6,7</code>은 0~7의 숫자를 2x4로 재배열한 메쉬를 의미하며, <code>last_tile_dim_replicate</code> 속성이 없으므로 이 샤딩은 배열을 2x4 메쉬에 대해 완전히 샤딩시킵니다. 이를 파티션 스펙으로 표현하면 <code>PartitionSpec("x", "y")</code>에 해당합니다. 그리고 브로드캐스트된 편향은 샤딩되지 않았습니다. 이 결과를 계산 그래프로 나타내면 다음과 같습니다.
     </p>
     <figure>
-        <img src="/static/jax-llm-3/sharding-completion-example.png">
+        {% image "src/static/jax-llm-3/sharding-completion-example.png", "샤딩이 완성된 perceptron 함수의 계산 그래프" %}
         <figcaption>샤딩이 완성된 perceptron 함수의 계산 그래프. 어노테이션된 텐서는 푸른 테두리로 표시했습니다.</figcaption>
     </figure>
     <p>

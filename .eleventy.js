@@ -1,5 +1,6 @@
 const fs = require("fs")
 const CleanCSS = require("clean-css")
+const Image = require("@11ty/eleventy-img")
 
 const seriesInfo = JSON.parse(fs.readFileSync("src/_data/series.json"))
 
@@ -30,6 +31,26 @@ module.exports = eleventyConfig => {
         }
 
         return null
+    })
+
+    eleventyConfig.addAsyncShortcode("image", async (
+        src,
+        alt = "",
+        widths = [400, 800, 1280],
+        formats = ["webp", "jpeg"],
+        sizes = "100vw"
+    ) => {
+        const imageMetadata = await Image(src, {
+            widths: [...widths, null],
+            formats: [...formats, null],
+            outputDir: "_site/static/img/",
+            urlPath: "/static/img/"
+        })
+
+        return Image.generateHTML(imageMetadata, {
+            alt,
+            sizes
+        })
     })
 
     return {
