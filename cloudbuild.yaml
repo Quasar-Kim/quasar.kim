@@ -5,8 +5,7 @@ steps:
 - name: 'node'
   entrypoint: 'npm'
   args: ['run', 'build']
-- name: gcr.io/quasar-kim-website/firebase
+- name: us-central1-docker.pkg.dev/quasar-kim-website/cloudbuild/firebase
   args: ['deploy', '--project=quasar-kim-website', '--only=hosting']
 options:
   defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET
-  
