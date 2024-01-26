@@ -9,3 +9,4 @@ steps:
   args: ['deploy', '--project=quasar-kim-website', '--only=hosting']
 options:
   defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET
+  
