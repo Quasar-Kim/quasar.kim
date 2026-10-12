@@ -1,0 +1,426 @@
+---
+layout: post.njk
+title: 데이터클래스는 어떻게 구현됐을까?
+summary: "데이터클래스 속으로"
+description: 파이썬 데이터클래스는 어떻게, 그리고 왜 그렇게 구현됐을까?
+date: 2026-10-12
+tags:
+- blog
+---
+
+<section>
+    <p>파이썬 코드 짜면서 데이터클래스 한 번은 써본 적 있지? 나도
+        데이터클래스 참 좋아하는데, 필드 이름이랑 타입만 쓰면 내가 원하는 데이터
+        타입을 바로 만들 수 있잖아. 예를 들어 '나이'랑 '이름' 속성을 가진
+        '사람'이란 데이터 타입은 다음 코드 몇 줄로 바로 구현할 수 있지.</p>
+
+    <p>
+    {% highlight "python" %}
+from dataclasses import dataclass
+
+@dataclass
+class Person:
+    name: str
+    age: int
+
+print(Person(name='김준성', age=23))
+    {% endhighlight %}
+
+    {% highlight "plaintext" %}
+Person(name='김준성', age=23)
+    {% endhighlight %}
+    </p>
+
+    <p>
+        그래서 내가 최근에 작업하고 있던 사이드 프로젝트에서도 데이터클래스를 일상적으로 사용하고 있었어.
+        그러다 어느 날 갑자기 '데이터클래스는 어떻게 구현되어있을까?' 라는 궁금증이 들더라고. 도대체
+        <code>@dataclass</code> 데코레이터가 하는 일은 뭘까? 파이썬 언어가 지원하는 특별한 기능인걸까?
+        아니면 뭔가 굉장히 복잡하면서도 멋진 메타프로그래밍 기법이 사용된 건 아닐까?
+    </p>
+
+    <h2>데이터클래스 속으로</h2>
+
+    <p>
+        결론부터 이야기하자면, <code>@dataclass</code> 데코레이터는 클래스 변수의 어노테이션<small>annotation</small>
+        을 읽어 <code>__init__()</code>, <code>__repr()__</code> 등의 특별한 메서드를 동적으로
+        생성하는 방식으로 동작해.
+        위에 나왔던 <code>Person</code> 데이터클래스의 코드를 <code>@dataclass</code> 데코레이터 없이
+        직접 손으로 짠다고 생각해 봐. 그럼 이런 코드를 쓰겠지?
+    </p>
+
+    <p>
+    {% highlight "python" %}
+class Person:
+    def __init__(self, name: str, age: int):
+        self.name = name
+        self.age = age
+
+    def __repr__(self):
+        return f'Person(name={self.name}, age={self.age})'
+
+    ...
+    {% endhighlight %}
+    </p>
+
+    <p>
+        뭔가 패턴이 보이지? <code>@dataclass</code> 데코레이터가 하는 일은 <code>__init__()</code>, 
+        <code>__repr__()</code> 등의 특수한 메서드를 이것과 비슷한 패턴으로 자동으로 생성하는 거야. 
+        구체적으로는 
+        <b>
+            1. 특수한 메서드의 코드를 문자열로 생성하고, 2. 메서드 코드로부터 실제 함수를 만든 후, 
+            3. 그걸 클래스 오브젝트에 붙이는 방식
+        </b>
+        을 사용해. 
+        아니, 이딴 게 된다고? 할 수 있는데, 파이썬은 신기하게도 이딴 게 되고, 이게 가능한 건 파이썬의 몇 가지 신기한 기능들 덕분이야. 
+        우선 이 기능들을 하나씩 짚어보자.
+    </p>
+
+    <p>
+        첫 번째, 파이썬에서 클래스는 오브젝트야. 
+        별로 놀라운 사실이 아니라고 생각할 수 있는데, 사실 C++ 같은 언어에서는 상상도 못 하는 일이지. 
+        이런 언어에서 클래스는 "오브젝트를 생성하는 설계도"를 명시하는 문법으로 정의되고, 
+        코드가 클래스를 런타임에 동적으로 생성한다거나 (템플릿은 컴파일 타임에 동작하므로 논외로 치자), 
+        클래스를 함수의 인자로 넘긴다던가, 같이 클래스를 오브젝트 다루듯이 다룰 순 없어. 
+        하지만 파이썬은 "모든 것이 객체다" (everything is an object) 라는 객체 지향 패러다임을 받아들였고, 
+        그래서 클래스 그 자체를 오브젝트로 다룰 수 있어. 
+        그리고 이 덕분에 런타임에 동적으로 클래스를 생성하거나 수정한다거나 하는 짓이 가능하지.
+    </p>
+
+    <p>
+        예를 들자면 다음 코드의 <code>add_signature</code> 이라는 함수는 아무 클래스나 받아서 <code>author</code> 
+        이라는 속성을 추가하는 함수인데, 이 함수도 클래스가 오브젝트이기 때문에 동작하는 거야.
+    </p>
+
+    <p>
+    {% highlight "python" %}
+def add_signature(cls):
+    return setattr(cls, 'author', '김준성')
+
+add_signature(Person)
+print(Person.author)
+    {% endhighlight %}
+
+    {% highlight "plaintext" %}
+김준성
+    {% endhighlight %}
+    </p>
+
+    <p>C++ 같은 언어에서는 상상하기 어려운 일이지.</p>
+
+    <p>
+    {% highlight "cpp" %}
+class Person {
+public:
+    std::string name;
+    int age;
+}
+
+void add_signature(cls: ???) {
+    ???
+}
+    {% endhighlight %}
+    </p>
+
+    <p>
+        두 번째, 파이썬에서는 변수에 어노테이션을 붙일 수 있고, 이 정보를 런타임에 사용할 수 있어. 
+        어노테이션은 <code>변수: 표현식</code> 문법으로 사용하는데, 주로 일반적인 변수의 타입을 표시하거나, 
+        인스턴스 또는 클래스 변수의 타입을 표시하거나, 함수의 인수와 반환값의 타입을 표시하기 위해서 사용돼.
+    </p>
+
+    <p>
+    {% highlight "python" %}
+x: int = 2 # 일반적인 변수의 타입 표시
+
+class Cat:
+    age: int # 클래스 변수의 타입 표시
+    name: str
+
+    def meow(self, to: str) -> str: # 함수 (메서드) 의 인수와 반환값 타입 표시
+        return f"안녕. 나는 {self.age} 살 먹은 고양이 {self.name} 다. {to} 는 간식을 바치거라."
+    {% endhighlight %}
+    </p>
+
+    <p>
+        함수와 클래스는 <code>__annotation__</code> 이라는 특별한 속성을 가지는데 
+        이 속성을 통해서 어노테이션의 값에 접근할 수 있어. 
+        함수의 <code>__annotation__</code> 속성을 통해서는 각 인수와 반환값의 어노테이션을, 
+        클래스의 경우에는 모든 클래스 변수의 어노테이션을 딕셔너리 형식으로 볼 수 있어.
+    </p>
+
+    <p>
+    {% highlight "python" %}
+def add(x: int, y: int) -> int:
+    return x + y
+
+print("add.__annotations__:" add.__annotations__) 
+print("Person.__annotations__:", Person.__annotations__)
+    {% endhighlight %}
+
+    {% highlight "plaintext" %}
+add.__annotations__: {'x': <class 'int'>, 'y': <class 'int'>, 'return': <class 'int'>}
+Person.__annotations__: {'name': <class 'str'>, 'age': <class 'int'>}
+    {% endhighlight %}
+    </p>
+
+    <p>
+        한 가지 재미있는 사실은 대게 어노테이션은 타입을 표시하기 위해서 사용되지만, 
+        사실 아무 표현식이나 어노테이션으로 사용할 수 있어. 
+        그래서 다음 코드들처럼 이상한 어노테이션들도 모두 유효해. 
+        이건 어노테이션의 사용처를 타입 정의로만 한정하지 않기 위한 것이지.
+    </p>
+
+    <p>
+    {% highlight "python" %}
+class WhatThe:
+    x: print("안녕")
+    y: 42
+
+print(WhatThe.__annotations__)
+    {% endhighlight %}
+
+    {% highlight "plaintext" %}
+안녕
+{'x': None, 'y': 42}
+    {% endhighlight %}
+    </p>
+
+    <p>
+        마지막으로, 파이썬 코드는 런타임에서 파이썬 코드 문자열로부터 실제 객체를 생성할 수 있어.
+    </p>
+
+    <p>
+    {% highlight "python" %}
+the_answer_txt = '''
+def the_answer():
+    return 42
+'''
+
+locals_dict = {}
+exec(the_answer_txt, locals=locals_dict, globals=globals())
+the_answer = locals_dict['the_answer']
+print(the_answer())
+    {% endhighlight %}
+
+    {% highlight "plaintext" %}
+42
+    {% endhighlight %}
+    </p>
+
+    <p>
+        무슨 일이 일어났는지 하나씩 살펴볼까? 
+        우선 <code>the_answer_txt</code> 변수에 <code>the_answer</code> 이라는 함수의 코드를 
+        문자열로 넣어놨어. 
+        그리곤 <code>exec()</code> 함수를 실행하는데, 이 함수가 하는 일은 코드 문자열을 특정한 이름 공간<small>namespace</small>
+        에서 실행하는거야. <code>locals</code> 인자로 로컬 이름 공간을, <code>globals</code> 인자로 
+        전역 이름 공간을 정의하지. 
+        그러면 코드 문자열이 실행되어서 <code>the_answer</code> 이라는 함수가 로컬 이름 공간에서 정의되고, 
+        이 함수는 <code>locals_dict['the_answer']</code> 와 같이 접근할 수 있어. 
+        그러니깐 <code>exec()</code> 함수가 런타임에서 사용 가능한 컴파일러처럼 작동한다고도 할 수 있겠네. 
+        이 방법을 사용하면 만들고자 하는 함수를 문자열로 만든 후 실제 함수를 만들어 낼 수 있는 거지.
+    </p>
+
+    <p>
+        이제 실제로 <code>@dataclass</code> 데코레이터를 직접 만들어볼게. 우리가 해야 할 일은 
+        1. 클래스의 <code>__annotations__</code> 에 접근해서 모든 클래스 변수들의 어노테이션을 읽고, 
+        2. 그 정보로부터 <code>__init__</code> 메서드의 코드를 생성한 다음 
+        3. 실제로 <code>__init__</code> 메서드를 추가하는 거야. 
+    </p>
+
+    <p>
+    {% highlight "python" %}
+from typing import Any
+
+def my_dataclass(cls):
+    annotations = cls.__annotations__
+
+    add_method(cls, "__init__", init_txt(annotations))
+
+    return cls
+
+def init_txt(annotations: dict[str, Any]) -> str:
+    lines = []
+    
+    # 함수 정의 부분 생성 (def __init__...)
+    params = []
+    for k, annot in annotations.items():
+        params.append(f'{k}: {annot.__qualname__}')
+    lines.append(f'def __init__(self, {", ".join(params)}):')
+    
+    # 함수 본문 생성
+    for k, annot in annotations.items():
+        lines.append(f'    self.{k}: {annot.__qualname__} = {k}')
+
+    return '\n'.join(lines)
+
+def add_method(cls, name: str, txt: str):
+    locals_dict = {}
+    exec(txt, locals=locals_dict, globals=globals())
+    setattr(cls, name, locals_dict[name])
+    {% endhighlight %}
+    </p>
+
+    <p>
+        코드가 어렵진 않으니 설명은 생략할게. 이제 <code>@my_dataclass</code> 데코레이터로 
+        클래스를 감싸면 <code>__init__</code> 메서드가 생성되어서 쓸 수 있어.
+    </p>
+
+    <p>
+    {% highlight "python" %}
+@my_dataclass
+class Person:
+    name: str
+    age: int
+
+p = Person(name="김준성", age=23)
+print(p.name)
+    {% endhighlight %}
+
+    {% highlight "plaintext" %}
+김준성
+    {% endhighlight %}
+    </p>
+
+    <p>
+        게다가 필드 자동완성도 정상적으로 작동해.
+    </p>
+
+    <p>
+    {% image "src/static/dataclass/pyrefly.png", "vscode pyrefly 툴팁" %}
+    </p>
+
+    <p>
+        하지만 이 구현은 여러 문제가 있어. 
+        우선 위 사진에 빨간 줄이 쳐져 있는 게 보이지? 
+        저건 생성된 <code>__init__</code> 메서드를 타입 체커 (여기서는 pyrefly) 가 인식하지 못해서 
+        저러는 거야. 
+        다음 사진처럼 타입 체커한테 <code>__init__</code> 메서드의 타입을 물어보면 잘못된 타입을 보여주는데, 
+        타입 체커가 생성된 메서드를 인식하지 못했다는 걸 알 수 있지. 
+    </p>
+
+    <p>
+    {% image "src/static/dataclass/wrong-signature.png" %}
+    </p>
+
+    <p>
+        이 문제는 함수를 런타임에 생성하는 경우까지는 고려하기 어려운 타입 체커의 한계 때문에 발생해. 
+        오리지널 데이터클래스는 아무 문제 없지 않냐고? 
+        그건 타입 체커 (pyrefly) 가 데이터클래스를 특별하게 처리하기 때문에 생성된 메서드들의 타입을 
+        인식할 수 있는 거더라고. 
+    </p>
+
+    <p>
+        그리고 <a href="https://github.com/python/cpython/blob/main/Lib/dataclasses.py">실제 데이터클래스의 구현</a> 
+        은 위 코드보다 훨씬 복잡해. 
+        훨씬 많은 특별 메서드 (<code>__repr__</code>, 동등성 비교를 위한 <code>__hash__</code> 및 
+        순서를 정의하기 위한 <code>__lt__</code> 등...) 를 생성하는 데다가, 
+        필드의 기본값을 설정한다거나, 필드 변경을 금지한다거나 (<code>frozen=True</code>) 등의 복잡한 
+        기능들을 제공하거든. 
+        그래서 실제 구현을 살펴보면 코드가 상당히 복잡하고... 솔직히, 더러워. 
+        아무래도 파이썬 코드를 문자열로 직접 다루는 코드는 그다지 예쁘진 않지. 
+        실수의 여지도 많고, 여러 예외 처리가 필요한 데다가, 문자열을 이리저리 다루다 보면 코드가 더러워지기 십상이니깐. 
+    </p>
+
+    <h2>가지 않은 길들</h2>
+
+    <p>
+        그러면 왜 이렇게 더러운 방식을 선택했을까? 난 데이터클래스의 내부를 뜯어보기 전까지는 각 클래스에 특화된 메서드들이 생성되는 대신 일반화된 메서드가 사용될 거라고 생각했어. 코드로 말하자면 이런 거지.
+    </p>
+
+    <p>
+    {% highlight "python" %}
+def __init__(self, **kwargs):
+    for k in self.__class__.__annotations__:
+        setattr(self, k, kwargs[k])
+    {% endhighlight %}
+    </p>
+
+    <p>
+        이런 접근 방식을 사용했다면 코드가 좀 더 예뻐지고 오류를 잡거나 관리하기 쉬워졌을 거야. 
+        그런데도 함수 문자열을 생성하는 방식으로 간 이유는 뭘까? 그건 속도 문제 때문이라고 하더라고. 
+        각 데이터클래스에 특화된 메서드를 생성한다면 그게 일반화된 메서드보다 빠르게 동작할 수밖에 없고, 
+        반복적으로 생성된 메서드를 호출하는 경우에는 그 차이는 더 커질거야. 
+        결국 성능을 위해서 코드의 더러움을 감수한 결정이라고 볼 수 있을 거로 생각해.
+    </p>
+
+    <p>
+        또 한 가지 질문. 왜 데코레이터를 사용했을까? 
+        우리가 해야 하는 것은 클래스의 클래스 변수와 어노테이션을 읽어 새로운 클래스를 만드는 거고, 
+        이건 클래스로부터 클래스를 만드는 거니깐... 이건 완전 메타클래스가 하는 일이잖아? 
+        데이터클래스가 <code>Dataclass</code> 라는 메타클래스를 사용하게 하는 방식으로 구현하는 건 어떨까?
+    </p>
+
+    <p>
+    {% highlight "python" %}
+from dataclasses import Dataclass # 실제론 이런 심볼 없습니다.
+
+class Person(metaclass=Dataclass):
+    person: int
+    age: int
+    {% endhighlight %}
+    </p>
+
+    <p>
+        이 방식을 선택하지 않았던 이유는 파이썬의 아버지 귀도 반 로썸 선생님 피셜 
+        <a href="https://discuss.python.org/t/typing-protocol-decorator-to-create-a-class-of-type-protocol/19706/6">메타클래스 충돌 문제</a> 
+        때문이라고 하더라고. 
+        파이썬 클래스는 단 하나만의 메타클래스만을 가질 수 있어. 
+        그래서 만약 데이터클래스를 메타클래스를 이용해서 구현했더라면 다른 종류의 메타클래스를 사용하는 클래스를 데이터클래스로 사용할 수 없는 문제가 발생해. 
+        멋지게 말하자면 메타클래스는 "구성 가능하지" (composable) 하지 않다는 거지. 
+    </p>
+
+    <p>
+        하지만 메타클래스를 선택한 라이브러리도 있어. 
+        바로 PyPI 주간 다운로드 순위 17위 (2026.10 기준) 에 빛나는 데이터 검증 및 모델링 라이브러리 
+        <a href="https://pypi.org/project/pydantic/">pydantic</a> 이야. 
+        pydantic은 데코레이터 대신 커스텀 메타클래스를 사용하는 <code>BaseModel</code> 이라고 하는 클래스를 제공하고, 
+        이 클래스를 확장하는 방식으로 데이터 타입을 만들 수 있어. 
+        그리고 이렇게 만든 데이터 타입은 데이터클래스와 다르게 런타임 타입 검증 기능을 제공해.
+    </p>
+
+    <p>
+    {% highlight "python" %}
+from pydantic import BaseModel
+
+class Person(BaseModel):
+    name: str
+    age: int
+
+Person(name=23, age="김준성")
+    {% endhighlight %}
+
+    {% highlight "plaintext" %}
+pydantic_core._pydantic_core.ValidationError: 2 validation errors for Person
+name
+  Input should be a valid string [type=string_type, input_value=23, input_type=int] ...
+age
+  Input should be a valid integer, unable to parse string as an integer [type=int_parsing, input_value='김준성', input_type=str] ...
+    {% endhighlight %}
+    </p>
+
+    <p>
+        그러면 pydantic은 왜 데코레이터 대신 메타클래스를 사용했을까? 
+        나도 정확한 이유는 잘 모르겠지만, 아마도 기능의 복잡성 때문이 아닐까 싶어. 
+        pydantic의 <code>BaseModel</code> 는 런타입 타입 검증, JSON 직렬화 등 훨씬 많은 기능을 
+        제공해야 하다 보니 이 기능들을 모두 파이썬 코드를 생성하는 방식으로 구현했다가는 내부 코드가 굉장히 
+        이해하기 어려워졌을 거야.
+    </p>
+
+    <h2>틀린 길은 없어</h2>
+
+    <p>
+        파이썬은 흔히 "문제를 해결하는 한 가지 옳은 방법을 제공하는" 언어라고 많이들 생각하더라고. 
+        하지만 이번 글에서 다룬 데이터클래스만 해도 난 그 구현이 "옳다"라고 생각하지 않아. 
+        대신 아름다움과 실용성을 저울질한 결과일 뿐이지. 
+        그리고 실제로 다른 길을 선택한 라이브러리인 <code>pydantic</code> 도 잠깐이지만 소개했고. 
+        결국 프로그래밍에서 한 가지 옳은 구현이 존재한다는 믿음은 허상이자 아집이라고 생각해.
+    </p>
+
+    <p>
+        프로그래밍의 아름다움은 선택에서 비롯돼. 
+        누군가에겐 무심하게 비치는 코드 한 줄 한 줄은 사실 프로그래머의 크고 작은 치열한 고민 끝에 써 내려진 결과물이지. 
+        그러기에 똑같은 문제를 해결하는 수많은 코드가 존재할 수 있고, 
+        그 코드들이 모두 나름의 아름다움을 가지고 있어. 
+        그 가능성 속에서 자신만의 아름다움을 향해 나아가는 과정, 난 그 과정이 참 좋아. 
+    </p>
+
+</section>
